@@ -1,0 +1,32 @@
+{
+  "name": "teste-junior",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "pnpm --filter \"./apps/*\" run dev",
+    "dev:api": "pnpm --filter api run dev",
+    "build": "pnpm --filter \"./apps/*\" run build",
+    "build:api": "pnpm --filter api run build",
+    "test": "pnpm --filter \"./apps/*\" run test",
+    "test:api": "pnpm --filter api run test",
+    "lint": "pnpm --filter \"./apps/*\" run lint",
+    "format": "pnpm --filter \"./apps/*\" run format",
+    "prisma:generate": "pnpm --filter api run prisma:generate",
+    "prisma:migrate": "pnpm --filter api run prisma:migrate",
+    "prisma:seed": "pnpm --filter api run prisma:seed"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devEngines": { 
+    "packageManager": {
+      "name": "pnpm",
+      "version": "^11.6.0",
+      "onFail": "download"
+    }
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": ["bcrypt"]
+  }
+}
