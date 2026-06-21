@@ -14,12 +14,14 @@
     "build": "tsc",
     "dev": "tsc --watch"
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "license": "ISC",
   "dependencies": {
-    "zod": "^3.25.0"
+    "zod": "^3.25.76"
   },
   "devDependencies": {
-    "typescript": "^5.8.3"
+    "typescript": "^5"
   }
 }
