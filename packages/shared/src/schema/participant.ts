@@ -12,7 +12,7 @@ export const createParticipantSchema = z.object({
     observations: z.string().max(500, 'Observações devem ter no máximo 500 caracteres').optional(),
 })
 
-export type CreateParticipantSchema = z.infer<typeof createParticipantSchema>    
+export type CreateParticipantInput = z.infer<typeof createParticipantSchema>    
 
 export const participantResponseSchema = z.object({
     id: z.string(),
