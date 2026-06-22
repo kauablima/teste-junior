@@ -1,7 +1,8 @@
 import { Prisma } from "@/generated/prisma/client";
 import { PrismaService } from "@/prisma/prisma.service";
 import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
-import { CreateParticipantSchema } from "@teste-junior/shared";
+import { createParticipantsDto } from "./dto/create-participants.dto";
+
 
 @Injectable()
 export class ParticipantService {
@@ -10,7 +11,7 @@ export class ParticipantService {
   ) { }
 
 
-  async create(dto: CreateParticipantSchema) {
+  async create(dto: createParticipantsDto) {
     try {
       const participant = await this.prisma.participant.create({
         data: dto,
