@@ -28,9 +28,9 @@ model Participant {
 
 model Team {
   id           String        @id @default(uuid())
-  name         String
+  name         String        @unique
   state        String
-  serie        String
+  division     String
   participants Participant[]
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
@@ -43,4 +43,3 @@ model Adminsys {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
-
