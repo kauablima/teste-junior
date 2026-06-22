@@ -2,7 +2,7 @@ import { Body, Controller, HttpCode, Post, Res, UseGuards } from "@nestjs/common
 import { AuthService } from "./auth.service";
 import { LoginDto } from "./dto/login.dto";
 import { Throttle } from "@nestjs/throttler";
-import { AuthGuard } from "@nestjs/passport";
+import { JwtAuthGuard } from "./guards/jwt-auth.guard";
 
 @Controller('auth')
 export class AuthController {
@@ -25,7 +25,7 @@ export class AuthController {
 
     @Post('logout')
     @HttpCode(200)
-    @UseGuards(AuthGuard)
+    @UseGuards(JwtAuthGuard)
     logout(@Res({passthrough: true}) res: any) { 
         res.clearCookie('token', {
             httpOnly: true,
