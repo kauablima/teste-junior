@@ -4,15 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "pnpm run dev --filter @teste-junior/*",
-    "build": "pnpm build --filter @teste-junior/*",
-    "test": "pnpm test --filter @teste-junior/*",
-    "lint": "pnpm lint --filter @teste-junior/*",
-    "format": "pnpm format --filter @teste-junior/*"
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "test": "turbo run test"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "packageManager": "pnpm@11.6.0",
   "devEngines": {
     "packageManager": {
       "name": "pnpm",
@@ -24,6 +23,7 @@
     "@types/node": "^26.0.0",
     "eslint": "^10.5.0",
     "prettier": "^3.8.4",
+    "turbo": "^2.9.18",
     "typescript": "^6.0.3"
   }
 }
