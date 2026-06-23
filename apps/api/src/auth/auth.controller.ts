@@ -1,4 +1,5 @@
 import { Body, Controller, HttpCode, Post, Res, UseGuards } from "@nestjs/common";
+import { Response } from 'express';
 import { AuthService } from "./auth.service";
 import { LoginDto } from "./dto/login.dto";
 import { Throttle } from "@nestjs/throttler";
@@ -6,32 +7,31 @@ import { JwtAuthGuard } from "./guards/jwt-auth.guard";
 
 @Controller('auth')
 export class AuthController {
-    constructor(private readonly authService: AuthService){}
+    constructor(private readonly authService: AuthService) { }
 
     @Post('login')
     @HttpCode(200)
-    @Throttle({login: { ttl: 60_000, limit: 4 }})
-    async login(@Body() dto: LoginDto, @Res({passthrough: true}) res: any ){ 
+    @Throttle({ login: { ttl: 60_000, limit: 4 } })
+    async login(@Body() dto: LoginDto,
+        @Res({ passthrough: true }) res: Response & any) {
         const token = await this.authService.login(dto.email, dto.password);
 
         res.cookie('token', token, {
             httpOnly: true,
             sameSite: 'lax',
             secure: process.env.NODE_ENV === 'production',
-            maxAge: 8 * 60 * 60 * 1000, 
+            maxAge: 8 * 60 * 60 * 1000,
         });
-        return {email: dto.email};
+
+        return { email: dto.email };
     }
 
     @Post('logout')
     @HttpCode(200)
     @UseGuards(JwtAuthGuard)
-    logout(@Res({passthrough: true}) res: any) { 
-        res.clearCookie('token', {
-            httpOnly: true,
-            sameSite: 'lax',
-            secure: process.env.NODE_ENV === 'production',
-        });
+    logout(@Res({ passthrough: true }) res: Response & any) {
+        res.clearCookie('token');
+
         return 'Logout realizado com sucesso';
     }
 }
