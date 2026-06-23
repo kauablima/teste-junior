@@ -17,7 +17,7 @@ export default function ParticipantCard({ participant, onView }: ParticipantCard
 
             <div className="flex-1 min-w-0">
                 <p className="text-[15px] font-bold tracking-[-0.01em] text-[var(--color-ink)] truncate">{participant.name}</p>
-                <p className="text-[13px] text-[var(--color-ink-2)] truncate">{participant.email}</p>
+                <p className="text-[13px]  text-(--color-ink-2) truncate">{participant.email}</p>
             </div>
 
             <div className="hidden sm:flex flex-col gap-0.5 min-w-[138px]">

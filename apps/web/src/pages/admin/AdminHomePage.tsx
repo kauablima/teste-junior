@@ -3,7 +3,9 @@ import { ChevronLeft, ChevronRight, LogOut, Search, Plus } from 'lucide-react'
 import { type ParticipantResponseSchema, type TeamResponseSchema } from '@teste-junior/shared'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
-import { api } from '@/service/api'
+import { getParticipants } from '@/service/participant'
+import { getTeams, deleteTeam } from '@/service/team'
+import { logout } from '@/service/auth'
 import { Button } from '@/components/ui/button'
 import PanelHeader from '@/components/layout/PanelHeader'
 import StatPill from '@/components/admin/StatPill'
@@ -15,27 +17,21 @@ import IconInput from '@/components/ui/icon-input'
 export default function AdminHomePage() {
     const navigate = useNavigate()
     const [activeTab, setActiveTab] = useState<'participants' | 'teams'>('participants')
-    
-    // Participants state
     const [participants, setParticipants] = useState<ParticipantResponseSchema[]>([])
     const [pTotal, setPTotal] = useState(0)
     const [pPage, setPPage] = useState(1)
     const [search, setSearch] = useState('')
-    
-    // Teams state
     const [teams, setTeams] = useState<TeamResponseSchema[]>([])
     const [tTotal, setTTotal] = useState(0)
     const [tPage, setTPage] = useState(1)
-    
-    // Modals
     const [selectedTeam, setSelectedTeam] = useState<TeamResponseSchema | null | undefined>(undefined)
 
     const limit = 10
 
     const fetchParticipants = useCallback(async (q?: string, p = 1) => {
         try {
-            const { data } = await api.get('/participants', { params: { search: q, page: p, limit } })
-            setParticipants(data.data || [])
+            const data = await getParticipants(q, p, limit)
+            setParticipants(data.data ?? [])
             setPTotal(data.total || 0)
             setPPage(data.page || 1)
         } catch {
@@ -45,9 +41,9 @@ export default function AdminHomePage() {
 
     const fetchTeams = useCallback(async (p = 1) => {
         try {
-            const { data } = await api.get('/teams', { params: { page: p, limit } })
-            setTeams(Array.isArray(data) ? data : (data.data || []))
-            setTTotal(Array.isArray(data) ? data.length : (data.total || 0))
+            const data = await getTeams(p, limit)
+            setTeams(Array.isArray(data) ? data : (data || []))
+            setTTotal(Array.isArray(data) ? data.length : (data|| 0))
             setTPage(p)
         } catch {
             navigate('/admin/login')
@@ -63,7 +59,7 @@ export default function AdminHomePage() {
     }, [activeTab, fetchParticipants, fetchTeams, search, pPage, tPage])
 
     async function handleLogout() {
-        await api.post('/auth/logout')
+        await logout()
         toast.success('Sessão encerrada')
         navigate('/admin/login')
     }
@@ -71,7 +67,7 @@ export default function AdminHomePage() {
     async function handleDeleteTeam(id: string) {
         if (!window.confirm('Tem certeza que deseja remover este time?')) return
         try {
-            await api.delete(`/teams/${id}`)
+            await deleteTeam(id)
             toast.success('Time removido com sucesso')
             fetchTeams(tPage)
         } catch (err: any) {
@@ -81,7 +77,7 @@ export default function AdminHomePage() {
     }
 
     return (
-        <div className="min-h-screen bg-[var(--color-bg)] flex flex-col">
+        <div className="min-h-screen bg-(--color-bg) flex flex-col">
             <PanelHeader
                 subtitle="ADMIN SUITE · GESTÃO"
                 actions={
@@ -100,14 +96,13 @@ export default function AdminHomePage() {
             <div className="flex-1 overflow-y-auto p-4 sm:p-[26px_32px_40px]">
                 <div className="max-w-[1180px] mx-auto">
 
-                    {/* Tabs */}
-                    <div className="flex gap-4 mb-6 border-b border-[var(--color-border-soft)]">
+                    <div className="flex gap-4 mb-6 border-b border-(--color-border-soft)">
                         <button
                             onClick={() => setActiveTab('participants')}
                             className={`pb-3 px-1 text-[15px] font-bold transition-colors ${
                                 activeTab === 'participants' 
-                                ? 'text-[var(--color-brand)] border-b-2 border-[var(--color-brand)]' 
-                                : 'text-[var(--color-ink-3)] hover:text-[var(--color-ink-2)]'
+                                ? 'text-(--color-brand)] border-b-2 border-(--color-brand)]' 
+                                : 'text-(--color-ink-3)] hover:text-(--color-ink-2)]'
                             }`}
                         >
                             Participantes
@@ -116,8 +111,8 @@ export default function AdminHomePage() {
                             onClick={() => setActiveTab('teams')}
                             className={`pb-3 px-1 text-[15px] font-bold transition-colors ${
                                 activeTab === 'teams' 
-                                ? 'text-[var(--color-brand)] border-b-2 border-[var(--color-brand)]' 
-                                : 'text-[var(--color-ink-3)] hover:text-[var(--color-ink-2)]'
+                                ? 'text-(--color-brand) border-b-2 border-(--color-brand)' 
+                                : 'text-(--color-ink-3) hover:text-(--color-ink-2)'
                             }`}
                         >
                             Times
@@ -139,14 +134,14 @@ export default function AdminHomePage() {
                                             setSearch(e.target.value)
                                             setPPage(1)
                                         }}
-                                        className="bg-[var(--color-surface)]"
+                                        className="bg-(--color-surface)]"
                                     />
                                 </div>
                             </div>
 
                             <div className="flex flex-col gap-2.5">
                                 {participants.length === 0 ? (
-                                    <p className="py-8 text-center text-[13.5px] text-[var(--color-ink-3)]">Nenhum participante encontrado.</p>
+                                    <p className="py-8 text-center text-[13.5px] text-(--color-ink-3)">Nenhum participante encontrado.</p>
                                 ) : (
                                     participants.map((p) => (
                                         <ParticipantCard key={p.id} participant={p} onView={() => alert(JSON.stringify(p, null, 2))} />
@@ -174,7 +169,7 @@ export default function AdminHomePage() {
 
                             <div className="flex flex-col gap-2.5">
                                 {teams.length === 0 ? (
-                                    <p className="py-8 text-center text-[13.5px] text-[var(--color-ink-3)]">Nenhum time encontrado.</p>
+                                    <p className="py-8 text-center text-[13.5px] text-(--color-ink-3)">Nenhum time encontrado.</p>
                                 ) : (
                                     teams.map((t) => (
                                         <TeamCard 
@@ -205,7 +200,7 @@ export default function AdminHomePage() {
 function Pagination({ page, totalPages, setPage }: { page: number, totalPages: number, setPage: (p: number) => void }) {
     return (
         <div className="flex items-center justify-between mt-5">
-            <span className="text-[13px] text-[var(--color-ink-3)]">
+            <span className="text-[13px] text-(--color-ink-3)">
                 Página {page} de {totalPages}
             </span>
             <div className="flex gap-1.5">

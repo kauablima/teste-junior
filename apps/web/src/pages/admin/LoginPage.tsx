@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import { loginSchema, type LoginType } from '@teste-junior/shared'
-import { api } from '@/service/api'
+import { login } from '@/service/auth'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft, Mail, Lock, Eye, EyeOff } from 'lucide-react'
 import CenteredScreen from '@/components/layout/CenteredScreen'
@@ -26,7 +26,7 @@ export default function LoginPage() {
 
     async function onSubmit(data: LoginType) {
         try {
-            await api.post('/auth/login', data)
+            await login(data)
             navigate('/admin')
         } catch {
             toast.error('Credenciais inválidas')

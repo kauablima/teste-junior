@@ -3,7 +3,8 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { toast } from 'sonner'
 import { createParticipantSchema, type CreateParticipantInput, type TeamResponseSchema } from '@teste-junior/shared'
-import { api } from '@/service/api'
+import { createParticipant } from '@/service/participant'
+import { getTeams } from '@/service/team'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { User, IdCard, Mail, CheckCircle, Lock, Calendar, Phone } from 'lucide-react'
@@ -32,10 +33,9 @@ function formatPhone(value: string) {
 }
 
 function formatDate(value: string) {
-    // Allows typing numbers and slashes, enforces AAAA/MM/DD
-    let v = value.replace(/[^\d/]/g, '')
-    if (v.length > 4 && v[4] !== '/') v = v.slice(0, 4) + '/' + v.slice(4)
-    if (v.length > 7 && v[7] !== '/') v = v.slice(0, 7) + '/' + v.slice(7)
+    let v = value.replace(/[^\d\/]/g, '')
+    if (v.length > 2 && v[2] !== '/') v = v.slice(0, 2) + '/' + v.slice(2)
+    if (v.length > 5 && v[5] !== '/') v = v.slice(0, 5) + '/' + v.slice(5)
     return v.slice(0, 10)
 }
 
@@ -53,15 +53,14 @@ export default function RegisterPage() {
     })
 
     useEffect(() => {
-        // Busca a primeira página de times para o select
-        api.get('/teams', { params: { limit: 100 } })
-            .then((r) => setTeams(Array.isArray(r.data) ? r.data : []))
+        getTeams(1, 100)
+            .then((r) => setTeams(Array.isArray(r) ? r : []))
             .catch(() => toast.error('Falha ao carregar times'))
     }, [])
 
     async function onSubmit(data: CreateParticipantInput) {
         try {
-            await api.post('/participants', data)
+            await createParticipant(data)
             setSubmitted(true)
         } catch (err: any) {
             const msg = err.response?.data?.message || 'Erro ao enviar cadastro'
@@ -139,7 +138,7 @@ export default function RegisterPage() {
                                 <IconInput
                                     id="birthDate"
                                     icon={Calendar}
-                                    placeholder="AAAA/MM/DD"
+                                    placeholder="DD/MM/AAAA"
                                     {...register('birthDate')}
                                     onChange={(e: any) => setValue('birthDate', formatDate(e.target.value), { shouldValidate: true })}
                                 />

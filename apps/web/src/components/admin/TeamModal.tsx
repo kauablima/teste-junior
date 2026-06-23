@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { toast } from 'sonner'
 import { createTeamSchema, type CreateTeamInput, type TeamResponseSchema } from '@teste-junior/shared'
-import { api } from '@/service/api'
+import { createTeam, updateTeam } from '@/service/team'
 import { Button } from '@/components/ui/button'
 import Field from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
@@ -51,10 +51,10 @@ export default function TeamModal({ team, onClose, onSuccess }: TeamModalProps) 
     async function onSubmit(data: CreateTeamInput) {
         try {
             if (isEditing) {
-                await api.patch(`/teams/${team.id}`, data)
+                await updateTeam(team.id, data)
                 toast.success('Time atualizado com sucesso!')
             } else {
-                await api.post('/teams', data)
+                await createTeam(data)
                 toast.success('Time criado com sucesso!')
             }
             onSuccess()
@@ -81,7 +81,7 @@ export default function TeamModal({ team, onClose, onSuccess }: TeamModalProps) 
                     </button>
                 </div>
 
-                {/* Body */}
+        
                 <div className="p-6 overflow-y-auto">
                     <form id="team-form" onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
                         <Field label="Nome do Time" required htmlFor="name" error={errors.name?.message}>
@@ -119,7 +119,6 @@ export default function TeamModal({ team, onClose, onSuccess }: TeamModalProps) 
                     </form>
                 </div>
 
-                {/* Footer */}
                 <div className="flex justify-end gap-3 px-6 py-4 border-t border-[var(--color-border-soft)] bg-[var(--color-surface-2)] rounded-b-[20px]">
                     <Button variant="ghost" onClick={onClose} type="button">
                         Cancelar
