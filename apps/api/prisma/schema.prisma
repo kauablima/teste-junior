@@ -17,7 +17,7 @@ model Participant {
   name         String
   cpf          String   @unique
   email        String   @unique
-  birthDate    DateTime
+  birthDate    String
   phone        String
   team         Team     @relation(fields: [teamId], references: [id])
   teamId       String
