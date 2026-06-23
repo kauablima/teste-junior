@@ -1,6 +1,6 @@
 import 'reflect-metadata'
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';  
+import { AppModule } from './app.module';
 import { ZodValidationPipe } from 'nestjs-zod';
 import * as cookieParser from 'cookie-parser';
 
@@ -9,7 +9,7 @@ async function bootstrap() {
 
   app.use(cookieParser());
   app.enableCors({
-    origin: process.env.FRONTEND_URL ?? 'http://localhost:5173',
+    origin: process.env.FRONTEND_URL ?? 'http://localhost:5174',
     credentials: true,
   });
 
