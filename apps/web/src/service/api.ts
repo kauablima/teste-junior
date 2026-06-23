@@ -1,8 +1,32 @@
-import axios from 'axios'
+import type { ApiError } from '@/types/api-types';
+import axios, { AxiosError } from 'axios';
 
-// In dev, Vite proxies /api → http://localhost:3301
-// In production, set VITE_API_URL to the full base URL
 export const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL ?? '/api',
-  withCredentials: true, // needed for httpOnly JWT cookies
+  baseURL: import.meta.env.VITE_API_URL ?? 'http://localhost:3331/api',
+  withCredentials: true,
+  headers: {
+    'Content-Type': 'application/json',
+  }
 })
+
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers['Authorization'] = `Bearer ${token}`;
+  }
+  return config;
+});
+
+api.interceptors.response.use(
+  (response) => response,
+  (error: AxiosError<ApiError>) => {
+    if (error.response?.status === 401) {
+      const isAdminRoute = window.location.pathname.startsWith('/admin');
+      if (isAdminRoute) {
+        window.location.href = '/admin/login';
+      }
+    }
+
+    return Promise.reject(error);
+  }
+);
