@@ -30,6 +30,7 @@ RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 COPY --from=build /app/apps/api/node_modules   ./node_modules
 COPY --from=build /app/apps/api/dist           ./dist
 COPY --from=build /app/apps/api/prisma         ./prisma
+COPY --from=build /app/apps/api/prisma.config.ts ./prisma.config.ts
 COPY --from=build /app/apps/api/package.json   ./package.json
 
 USER appuser
